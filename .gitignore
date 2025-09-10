@@ -1,0 +1,18 @@
+﻿.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.env
+*.log
+results.csv
+# artifacts
+equity_curve.csv
+backtest_trades.csv
+best_params.csv
+grid_results.csv
+*_tmp.*
+config_tmp.yaml
+# results snapshots are kept under /results

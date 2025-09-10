@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    { "id": "start",   "type": "promptString", "description": "Start (YYYY-MM-DD)", "default": "2023-01-01" },
+    { "id": "end",     "type": "promptString", "description": "End (YYYY-MM-DD)",   "default": "2024-12-31" },
+    { "id": "universe","type": "pickString",   "description": "Universe CSV",
+      "options": [ ".\\data\\smoke30.csv", ".\\data\\symbols_nifty500_clean.csv" ],
+      "default": ".\\data\\smoke30.csv"
+    },
+    { "id": "maxpos",  "type": "promptString", "description": "Max positions", "default": "3" },
+    { "id": "cfg",     "type": "pickString",   "description": "Config",
+      "options": [ ".\\backtest\\config.yaml" ],
+      "default": ".\\backtest\\config.yaml"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "Backtest (Prompt)",
+      "type": "shell",
+      "command": "${config:python.defaultInterpreterPath}",
+      "args": [
+        "-m",
+        "backtest",
+        "--start",
+        "${input:start}",
+        "--end",
+        "${input:end}",
+        "--universe",
+        "${input:universe}",
+        "--max-pos",
+        "${input:maxpos}",
+        "--config",
+        "${input:cfg}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "echo": true
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
+

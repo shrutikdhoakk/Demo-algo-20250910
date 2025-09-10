@@ -1,0 +1,4 @@
+﻿strategycfg:
+  breakout_atr_buf: 0.35
+  trail_atr_mult: 1.10
+  atr_pct_max: 0.04
