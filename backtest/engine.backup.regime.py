@@ -286,7 +286,7 @@ class BacktestEngine:
             self.idx_close = close_panel.median(axis=1, skipna=True)
             print(f"RS: using synthetic index (median of {close_panel.shape[1]} symbols)")
 
-        # 3) Build RS percentile per day using 63d excess returns (mildly smoothed)
+        # 3) Build RS percentile per day using 63d returns
         self._RS_FILTER_ON = self.idx_close is not None
         if self._RS_FILTER_ON:
             if close_panel is None:
@@ -298,29 +298,23 @@ class BacktestEngine:
 
             L = max(1, self.rs_lookback)
             idx_ret = (self.idx_close / self.idx_close.shift(L) - 1.0)
+
             sym_ret = (close_panel / close_panel.shift(L) - 1.0)
+            # RS metric = symbol 63d return minus index 63d return (excess return)
             rs_excess = sym_ret.sub(idx_ret, axis=0)
+
+            # Optional mild smoothing of RS (5-day) to reduce choppiness
             rs_smoothed = rs_excess.rolling(5, min_periods=3).mean()
+
+            # Cross-sectional percentile rank per day
             rs_pct = rs_smoothed.rank(axis=1, pct=True, method="min")
+
+            # Push back into symbol frames
             for sym, df in self.data.items():
                 df["RS_PCT"] = rs_pct.get(sym, pd.Series(index=self.dates, dtype=float)).reindex(df.index)
-            print(f"RS: filter ON | threshold={self.rs_top_pct:.2f} | lookback={L}d | index={'synthetic' if 'RS: using synthetic index' in 'x' and close_panel is not None else self.index_symbol}")
 
-        # --- Market regime filter (NEW): index 200-DMA slope > 0 ---
-        self.regime_on = os.environ.get("REGIME_ON", str(self.cfg.get("REGIME_ON", 1))) == "1"
-        self.regime_len = int(os.environ.get("REGIME_LEN", self.cfg.get("REGIME_LEN", 200)))
-        self.regime_slope_win = int(os.environ.get("REGIME_SLOPE_WIN", self.cfg.get("REGIME_SLOPE_WIN", 20)))  # lookback for slope
-        if self.idx_close is not None and self.regime_on:
-            idx_ma = self.idx_close.rolling(self.regime_len, min_periods=self.regime_len).mean()
-            slope = idx_ma - idx_ma.shift(self.regime_slope_win)  # simple slope proxy
-            self.regime_bull = (slope > 0) & (self.idx_close > idx_ma)
-            # fill early NaNs as False (no trading until warmup)
-            self.regime_bull = self.regime_bull.fillna(False)
-            print(f"REGIME: ON | len={self.regime_len} | slope_win={self.regime_slope_win}")
-        else:
-            # if no index or disabled: always True
-            self.regime_bull = pd.Series(True, index=self.dates)
-            print("REGIME: OFF (no index or disabled)")
+            idx_name = "synthetic" if "RS: using synthetic index" in " ".join(map(str, [])) else self.index_symbol
+            print(f"RS: filter ON | threshold={self.rs_top_pct:.2f} | lookback={L}d | index={'synthetic' if close_panel is not None and 'RS: using synthetic index' in 'x' else self.index_symbol}")
 
         # state
         self.capital: float = self.total_capital
@@ -402,10 +396,6 @@ class BacktestEngine:
             self.equity_curve.append({"date": date, "value": total_value})
 
             # entries
-            # Skip new entries when regime is bearish
-            if not bool(self.regime_bull.loc[date]):
-                continue
-
             candidates: List[tuple[float, str, pd.Series]] = []
             for sym, df_sym in self.data.items():
                 if sym in self.portfolio: continue

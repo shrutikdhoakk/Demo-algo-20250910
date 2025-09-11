@@ -1,4 +1,6 @@
-﻿strategycfg:
-  breakout_atr_buf: 0.35
-  trail_atr_mult: 1.10
-  atr_pct_max: 0.04
+regime:
+  enabled: false
+  len: 0
+  slope_win: 0
+# or, if you see use_regime: true, change to:
+use_regime: false

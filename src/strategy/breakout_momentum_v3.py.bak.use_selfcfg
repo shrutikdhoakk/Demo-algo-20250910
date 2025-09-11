@@ -1,4 +1,4 @@
-﻿"""Breakout + Momentum Swing v3.0 strategy implementation.
+﻿>> git push -u origin main"""Breakout + Momentum Swing v3.0 strategy implementation.
 
 This module defines a dataclass for configuration and a concrete
 strategy class that computes required features, evaluates entry
