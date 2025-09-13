@@ -1,6 +1,12 @@
-regime:
+﻿regime:
   enabled: false
   len: 0
   slope_win: 0
 # or, if you see use_regime: true, change to:
 use_regime: false
+MAX_INVESTED: 500000.0
+TOTAL_CAPITAL: 500000.0
+MAX_INVESTED: 500000.0
+PER_TRADE_RISK: 10000.0
+
+
