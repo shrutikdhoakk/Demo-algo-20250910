@@ -1,0 +1,25 @@
+﻿strategycfg:
+  version: v3
+  breakout_atr_buf: 0.40
+  trail_atr_mult: 1.80
+  atr_pct_max: 0.07
+
+rs:
+  filter: true
+  threshold: 0.85
+  lookback_days: 63
+  index: "^NIFTY500"        # prefer index
+  use_synthetic: false      # in case engine uses this flag
+
+momentum:
+  on: true
+  pctile: 0.90
+  lookbacks: [252, 126, 63]
+  lookbacks_days: [252, 126, 63]   # alt key some code uses
+  weights:  [6, 3, 1]
+
+# fallback synonyms some codepaths expect
+mom:
+  pctile: 0.90
+  lookbacks: [252, 126, 63]
+  weights:  [6, 3, 1]

@@ -1,0 +1,23 @@
+﻿strategycfg:
+  version: v3
+  breakout_atr_buf: 0.35
+  trail_atr_mult: 2.20
+  atr_pct_max: 0.12
+
+rs:
+  filter: true
+  threshold: 0.90           # top 10%
+  top_pct: 0.90             # (synonym, in case)
+  lookback_days: 252        # longer RS horizon boosts trend capture
+  lookback: 252             # (synonym)
+  index: "synthetic"        # keep your engine’s working baseline
+  use_synthetic: true
+
+momentum:
+  on: true
+  pctile: 0.92
+  lookbacks: [252, 126, 63]
+  weights:  [6, 3, 1]
+
+regime:
+  on: false                 # allow entries across regimes (lifts CAGR on 3–5y)

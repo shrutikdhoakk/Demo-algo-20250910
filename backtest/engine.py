@@ -1,5 +1,34 @@
-﻿"""Simple backtest engine for the Breakout Momentum strategy (Turbo, Pylance-safe)."""
+"""Simple backtest engine for the Breakout Momentum strategy (Turbo, Pylance-safe)."""
 from __future__ import annotations
+
+# --- Safe guards for .iloc on optional objects ---
+from typing import Optional, cast
+import pandas as pd
+
+def require_dataframe(x: Optional[object], name: str) -> pd.DataFrame:
+    if x is None:
+        raise ValueError(f"{name} is None")
+    if not isinstance(x, pd.DataFrame):
+        raise TypeError(f"{name} must be a pandas DataFrame, got {type(x)}")
+    if x.empty:
+        raise ValueError(f"{name} is empty")
+    return cast(pd.DataFrame, x)
+
+def require_series(x: Optional[object], name: str) -> pd.Series:
+    if x is None:
+        raise ValueError(f"{name} is None")
+    if not isinstance(x, pd.Series):
+        raise TypeError(f"{name} must be a pandas Series, got {type(x)}")
+    if x.empty:
+        raise ValueError(f"{name} is empty")
+    return cast(pd.Series, x)
+
+def iloc_last_df(x: Optional[pd.DataFrame], name: str) -> pd.Series:
+    return require_dataframe(x, name).iloc[-1]
+
+def iloc_last_series(x: Optional[pd.Series], name: str):
+    return require_series(x, name).iloc[-1]
+
 
 # --- pattern gate hook (auto-injected) ---
 import os

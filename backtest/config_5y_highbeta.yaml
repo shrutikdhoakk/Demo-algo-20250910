@@ -1,0 +1,20 @@
+﻿strategycfg:
+  version: v3
+  breakout_atr_buf: 0.35
+  trail_atr_mult: 2.10
+  atr_pct_max: 0.12
+
+rs:
+  filter: true
+  threshold: 0.85            # top 15% within the high-beta subset
+  lookback_days: 126
+  index: "synthetic"
+
+momentum:
+  on: true
+  pctile: 0.90
+  lookbacks: [252, 126, 63]
+  weights:  [6, 3, 1]
+
+regime:
+  on: false

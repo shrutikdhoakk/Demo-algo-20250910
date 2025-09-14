@@ -1,0 +1,21 @@
+strategycfg:
+  version: v3
+  breakout_atr_buf: 0.45
+  trail_atr_mult: 1.30
+  atr_pct_max: 0.055
+
+rs:
+  filter: true
+  threshold: 0.60        # top 40% RS
+  lookback_days: 63
+  index: "synthetic"     # matches what your engine actually used
+
+momentum:
+  on: true
+  pctile: 0.70
+  lookbacks: [126, 63, 21]
+
+regime:
+  on: true
+  len: 200
+  slope_win: 20
